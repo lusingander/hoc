@@ -1,12 +1,14 @@
 %{
 #define YYSTYPE double
 int yylex(void);
-void yyerror(char* s);
-void warning(char* s, char* t);
+void yyerror(char*);
+void warning(char*, char*);
+int printf(const char *, ...);
+double fmod(double, double);
 %}
 %token  NUMBER
 %left   '+' '-'
-%left   '*' '/'
+%left   '*' '/' '%'
 %left   UNARYMINUS
 %%
 list:     /* nothing */
@@ -19,11 +21,13 @@ expr:     NUMBER        { $$ = $1; }
         | expr '-' expr { $$ = $1 - $3; }
         | expr '*' expr { $$ = $1 * $3; }
         | expr '/' expr { $$ = $1 / $3; }
+        | expr '%' expr { $$ = fmod($1, $3); }
         | '(' expr ')'  { $$ = $2; }
         ;
 %%
 #include <stdio.h>
 #include <ctype.h>
+#include <math.h>
 
 char    *progname;
 int     lineno = 1;
