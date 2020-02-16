@@ -7,12 +7,14 @@ void warning(char* s, char* t);
 %token  NUMBER
 %left   '+' '-'
 %left   '*' '/'
+%left   UNARYMINUS
 %%
 list:     /* nothing */
         | list '\n'
         | list expr '\n'    { printf("\t%.8g\n", $2); }
         ;
 expr:     NUMBER        { $$ = $1; }
+        | '-' expr  %prec UNARYMINUS { $$ = -$2; }
         | expr '+' expr { $$ = $1 + $3; }
         | expr '-' expr { $$ = $1 - $3; }
         | expr '*' expr { $$ = $1 * $3; }
